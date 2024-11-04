@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+
 import Loader from './common/Loader';
-import ECommerce from './pages/Dashboard/ECommerce'; // Показваме основната страница
+import WelcomePage from './pagess/WelcomePage';
+import SignUpPage from './pagess/SignUpPage';
+import LoginPage from './pagess/LoginPage';
+import ECommerce from './pages/Dashboard/ECommerce'; // Импорт на основния темплейт
 import DefaultLayout from './layout/DefaultLayout';
 
-function App() {
+const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // Булева променлива
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Изходна стойност
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -17,23 +21,22 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  // Логика за показване на страницата
   return loading ? (
     <Loader />
-  ) : isLoggedIn ? (
-    <DefaultLayout>
-      <Routes>
-        <Route path="/" element={<ECommerce />} />
-        {/* Други защитени маршрути могат да се добавят тук */}
-      </Routes>
-    </DefaultLayout>
   ) : (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Log In Page</h1>
-      <h2>Create an account!</h2>
-      {/* Тук можеш да добавиш бутони за вход и регистрация */}
-    </div>
+    <Routes>
+      <Route path="/" element={<WelcomePage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route 
+        path="/login" 
+        element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} 
+      />
+      {isAuthenticated && (
+        <Route path="/main" element={<ECommerce />} /> // Добавяме основния темплейт
+      )}
+      {/* Тук можете да добавите и другите маршрути, ако е необходимо */}
+    </Routes>
   );
-}
+};
 
 export default App;
