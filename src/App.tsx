@@ -1,40 +1,26 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
-
-import Loader from './common/Loader';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import WelcomePage from './pagess/WelcomePage';
-import SignUpPage from './pagess/SignUpPage';
 import LoginPage from './pagess/LoginPage';
-import ECommerce from './pages/Dashboard/ECommerce'; // Импорт на основния темплейт
-import DefaultLayout from './layout/DefaultLayout';
+import SignUpPage from './pagess/SignUpPage';
+import ECommerce from './ECommerce';
 
 const App = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Изходна стойност
-  const { pathname } = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
-
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <Routes>
       <Route path="/" element={<WelcomePage />} />
+      <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route 
-        path="/login" 
-        element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} 
+        path="/main" 
+        element={
+          <ECommerce 
+            setIsAuthenticated={setIsAuthenticated} 
+          />
+        } 
       />
-      {isAuthenticated && (
-        <Route path="/main" element={<ECommerce />} /> // Добавяме основния темплейт
-      )}
-      {/* Тук можете да добавите и другите маршрути, ако е необходимо */}
     </Routes>
   );
 };
