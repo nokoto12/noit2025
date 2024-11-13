@@ -16,9 +16,7 @@ const App = () => {
       <Route 
         path="/main" 
         element={
-          <ECommerce 
-            setIsAuthenticated={setIsAuthenticated} 
-          />
+          <ECommerce setIsAuthenticated={setIsAuthenticated} />
         } 
       />
     </Routes>
