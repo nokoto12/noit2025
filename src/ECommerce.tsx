@@ -25,33 +25,57 @@ const ECommerce = ({ setIsAuthenticated }: ECommerceProps) => {
 
   return (
     <DefaultLayout>
-      <div className="flex justify-end p-4">
+      <div className="flex justify-end p-4 bg-gradient-to-r from-emerald-50 to-amber-50">
         <button 
           onClick={handleLogout}
-          className="bg-danger px-6 py-2 rounded-lg text-white hover:bg-opacity-90"
+          className="bg-emerald-600 px-6 py-2 rounded-lg text-yellow-50 hover:bg-emerald-700 transition-colors shadow-lg border border-emerald-400"
         >
           Изход
         </button>
       </div>
-      <main className="max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+      <main className="max-w-screen-2xl p-4 md:p-6 2xl:p-10 bg-gradient-to-br from-emerald-50 via-yellow-50 to-amber-50">
         <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
-          <ChartOne />
-          <ChartTwo />
-          <ChartThree />
+          <div className="col-span-12 xl:col-span-8">
+            <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+              <ChartOne />
+            </div>
+          </div>
+          <div className="col-span-12 xl:col-span-4">
+            <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+              <ChartTwo />
+            </div>
+          </div>
+          <div className="col-span-12">
+            <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+              <ChartThree />
+            </div>
+          </div>
         </div>
         <div className="mt-4">
-          <MapOne />
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <MapOne />
+          </div>
         </div>
         <div className="mt-4">
-          <Calendar />
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <Calendar />
+          </div>
         </div>
         <div className="mt-4">
-          <Alerts />
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <Alerts />
+          </div>
         </div>
         <div className="mt-4 flex flex-col gap-10">
-          <TableOne />
-          <TableTwo />
-          <TableThree />
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <TableOne />
+          </div>
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <TableTwo />
+          </div>
+          <div className="rounded-lg border border-amber-200 bg-white p-4 shadow-lg">
+            <TableThree />
+          </div>
         </div>
       </main>
     </DefaultLayout>
