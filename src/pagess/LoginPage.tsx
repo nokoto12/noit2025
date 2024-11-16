@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/Footerr/Footer';
 
-
 const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({ email: false, password: false });
 
   const handleLogin = () => {
@@ -73,6 +73,41 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
               {errors.password && (
                 <p className="mt-2 text-sm font-medium text-red-600">Please enter your password</p>
               )}
+            </div>
+
+            <div className="flex items-center">
+              <label className="flex items-center cursor-pointer group">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 border-2 rounded transition-all ${
+                    rememberMe 
+                      ? 'bg-emerald-500 border-emerald-500' 
+                      : 'border-amber-300 group-hover:border-emerald-400'
+                  }`}>
+                    {rememberMe && (
+                      <svg
+                        className="w-3 h-3 mx-auto mt-0.5 text-white"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="ml-2 text-amber-900 font-medium group-hover:text-emerald-700">
+                  Remember me
+                </span>
+              </label>
             </div>
 
             <button 

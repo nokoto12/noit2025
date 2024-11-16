@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/Footerr/Footer';
 
-
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -60,8 +59,56 @@ const SignUpPage = () => {
               )}
             </div>
 
-            {/* Email, Password, and Confirm Password fields follow the same pattern */}
-            {/* Previous input fields remain the same */}
+            <div>
+              <label className="text-base font-semibold text-amber-900 block mb-2">Email Address</label>
+              <input 
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`w-full px-4 py-3 rounded-xl transition-all text-lg
+                  ${errors.email 
+                    ? 'border-2 border-red-500 focus:border-red-600 bg-red-50' 
+                    : 'border-2 border-amber-300 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                placeholder="Enter your email"
+              />
+              {errors.email && (
+                <p className="mt-2 text-sm font-medium text-red-600">Please enter your email</p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-base font-semibold text-amber-900 block mb-2">Password</label>
+              <input 
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full px-4 py-3 rounded-xl transition-all text-lg
+                  ${errors.password 
+                    ? 'border-2 border-red-500 focus:border-red-600 bg-red-50' 
+                    : 'border-2 border-amber-300 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                placeholder="Enter your password"
+              />
+              {errors.password && (
+                <p className="mt-2 text-sm font-medium text-red-600">Please enter your password</p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-base font-semibold text-amber-900 block mb-2">Confirm Password</label>
+              <input 
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={`w-full px-4 py-3 rounded-xl transition-all text-lg
+                  ${errors.confirmPassword 
+                    ? 'border-2 border-red-500 focus:border-red-600 bg-red-50' 
+                    : 'border-2 border-amber-300 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                placeholder="Confirm your password"
+              />
+              {errors.confirmPassword && (
+                <p className="mt-2 text-sm font-medium text-red-600">Passwords do not match</p>
+              )}
+            </div>
 
             <button 
               onClick={handleSignUp}

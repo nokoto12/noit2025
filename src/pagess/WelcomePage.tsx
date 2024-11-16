@@ -11,7 +11,7 @@ const WelcomePage = () => {
       <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-yellow-300 to-amber-400 flex items-center justify-center p-6">
         <div className="max-w-4xl mx-auto text-center bg-white/90 rounded-2xl p-12 shadow-2xl backdrop-blur-sm">
           <h1 className="text-6xl font-bold text-amber-950 mb-6">
-            Welcome to Dashboard
+            Welcome to TeenBudget
           </h1>
           <p className="text-2xl text-amber-900 mb-12 max-w-2xl mx-auto">
             Powerful analytics and beautiful visualizations for your business
