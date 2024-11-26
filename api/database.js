@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "", // Default password for XAMPP
-  database: "_project_name_"
+  database: "teenbudget"
 });
 
 db.connect((err) => {
