@@ -4,32 +4,58 @@ import Footer from '../components/Footerr/Footer';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 
+interface LoginErrors {
+  email: boolean;
+  password: boolean;
+}
+
 const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState({ email: false, password: false });
+  const [errors, setErrors] = useState<LoginErrors>({ email: false, password: false });
 
-  const handleLogin = () => {
-    const newErrors = { email: false, password: false };
-    let hasError = false;
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-    if (!email) {
-      newErrors.email = true;
-      hasError = true;
-    }
-    if (!password) {
-      newErrors.password = true;
-      hasError = true;
-    }
-
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const newErrors = { 
+      email: !email || !isValidEmail(email), 
+      password: !password || password.length < 6 
+    };
+    
     setErrors(newErrors);
 
-    if (!hasError) {
-      setIsAuthenticated(true);
-      navigate('/main');
+    if (!newErrors.email && !newErrors.password) {
+      try {
+        const formData = new FormData();
+        formData.append('email', email.trim());
+        formData.append('password', password);
+        formData.append('rememberMe', rememberMe.toString());
+
+        const response = await fetch('http://localhost/teenbudget/login.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem('authToken', data.token);
+          setIsAuthenticated(true);
+          navigate('/main');
+        } else {
+          throw new Error(data.message || 'Невалидни данни за вход');
+        }
+      } catch (error: any) {
+        alert(error.message || 'Възникна грешка при влизането');
+      }
     }
   };
 
@@ -57,7 +83,7 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
         </div>
 
         <div className="flex-grow flex items-center justify-center p-6">
-          <div className={`w-full max-w-md ${
+          <form onSubmit={handleLogin} className={`w-full max-w-md ${
             isDarkMode ? 'bg-gray-800/90' : 'bg-white/95'
           } rounded-2xl shadow-2xl p-10 backdrop-blur-sm`}>
             
@@ -86,7 +112,7 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
                 />
                 {errors.email && (
                   <p className="mt-2 text-sm font-medium text-red-500">
-                    Моля, въведете вашия имейл
+                    Моля, въведете валиден имейл
                   </p>
                 )}
               </div>
@@ -106,7 +132,7 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
                 />
                 {errors.password && (
                   <p className="mt-2 text-sm font-medium text-red-500">
-                    Моля, въведете вашата парола
+                    Паролата трябва да е поне 6 символа
                   </p>
                 )}
               </div>
@@ -137,7 +163,7 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
               </div>
 
               <button 
-                onClick={handleLogin}
+                type="submit"
                 className={`w-full ${
                   isDarkMode 
                     ? 'bg-emerald-600 hover:bg-emerald-700' 
@@ -158,7 +184,7 @@ const LoginPage = ({ setIsAuthenticated }: { setIsAuthenticated: React.Dispatch<
                 </Link>
               </div>
             </div>
-          </div>
+          </form>
         </div>
         <Footer />
       </div>

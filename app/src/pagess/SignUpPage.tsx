@@ -4,6 +4,13 @@ import Footer from '../components/Footerr/Footer';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 
+interface SignUpErrors {
+  name: boolean;
+  email: boolean;
+  password: boolean;
+  confirmPassword: boolean;
+}
+
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
@@ -11,25 +18,59 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<SignUpErrors>({
     name: false,
     email: false,
     password: false,
     confirmPassword: false
   });
 
-  const handleSignUp = () => {
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidName = (name: string): boolean => {
+    const nameParts = name.trim().split(' ');
+    return nameParts.length >= 2 && nameParts.every(part => part.length >= 2);
+  };
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
     const newErrors = {
-      name: !name,
-      email: !email,
-      password: !password,
+      name: !name || !isValidName(name),
+      email: !email || !isValidEmail(email),
+      password: !password || password.length < 6,
       confirmPassword: !confirmPassword || password !== confirmPassword
     };
 
     setErrors(newErrors);
 
     if (!Object.values(newErrors).includes(true)) {
-      navigate('/login');
+      try {
+        const nameParts = name.trim().split(' ');
+        const formData = new FormData();
+        formData.append('firstName', nameParts[0]);
+        formData.append('lastName', nameParts.slice(1).join(' '));
+        formData.append('email', email.trim());
+        formData.append('password', password);
+
+        const response = await fetch('http://localhost/teenbudget/register.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          navigate('/login');
+        } else {
+          throw new Error(data.message || 'Грешка при регистрация');
+        }
+      } catch (error: any) {
+        alert(error.message || 'Възникна неочаквана грешка');
+      }
     }
   };
 
@@ -57,7 +98,7 @@ const SignUpPage = () => {
         </div>
 
         <div className="flex-grow flex items-center justify-center p-6">
-          <div className={`w-full max-w-md ${
+          <form onSubmit={handleSignUp} className={`w-full max-w-md ${
             isDarkMode ? 'bg-gray-800/90' : 'bg-white/95'
           } rounded-2xl shadow-2xl p-10 backdrop-blur-sm`}>
             
@@ -82,11 +123,11 @@ const SignUpPage = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={inputClasses(errors.name)}
-                  placeholder="Въведете вашето име"
+                  placeholder="Въведете вашето име и фамилия"
                 />
                 {errors.name && (
                   <p className="mt-2 text-sm font-medium text-red-500">
-                    Моля, въведете вашето име
+                    Моля, въведете валидно име и фамилия
                   </p>
                 )}
               </div>
@@ -106,7 +147,7 @@ const SignUpPage = () => {
                 />
                 {errors.email && (
                   <p className="mt-2 text-sm font-medium text-red-500">
-                    Моля, въведете вашия имейл
+                    Моля, въведете валиден имейл
                   </p>
                 )}
               </div>
@@ -126,7 +167,7 @@ const SignUpPage = () => {
                 />
                 {errors.password && (
                   <p className="mt-2 text-sm font-medium text-red-500">
-                    Моля, въведете парола
+                    Паролата трябва да е поне 6 символа
                   </p>
                 )}
               </div>
@@ -152,7 +193,7 @@ const SignUpPage = () => {
               </div>
 
               <button 
-                onClick={handleSignUp}
+                type="submit"
                 className={`w-full ${
                   isDarkMode 
                     ? 'bg-emerald-600 hover:bg-emerald-700' 
@@ -173,7 +214,7 @@ const SignUpPage = () => {
                 </Link>
               </div>
             </div>
-          </div>
+          </form>
         </div>
         <Footer />
       </div>
@@ -182,3 +223,4 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
+
